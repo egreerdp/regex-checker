@@ -1,0 +1,11 @@
+[tools]
+air = "latest"
+bun = "latest"
+
+[tasks.dev]
+run = "bun build:all && air"
+description = "build and run the app"
+
+[tasks."build:assets"]
+run = "mkdir -p static/js && cp node_modules/htmx.org/dist/htmx.min.js static/js/htmx.min.js"
+description = "build frontent assets"

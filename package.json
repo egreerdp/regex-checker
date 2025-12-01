@@ -1,0 +1,24 @@
+{
+  "name": "regex-checker",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:assets": "mkdir -p static/js && cp node_modules/htmx.org/dist/htmx.min.js static/js/htmx.min.js",
+    "build:css": "bunx @tailwindcss/cli -i ./assets/input.css -o ./static/css/style.css --minify",
+    "watch:css": "bunx @tailwindcss/cli -i ./assets/input.css -o ./static/css/style.css --watch",
+    "build:all": "bun run build:assets && bun run build:css"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "@types/bun": "latest",
+    "daisyui": "^5.5.5",
+    "tailwindcss": "^4.1.17"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "htmx.org": "^2.0.8"
+  }
+}
