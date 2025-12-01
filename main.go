@@ -4,6 +4,7 @@ import (
 	"embed"
 	"io/fs"
 	"log"
+	"net/http"
 	"regexp"
 
 	"github.com/a-h/templ"
@@ -38,6 +39,10 @@ func main() {
 		log.Fatal(err)
 	}
 	e.StaticFS("/static", assetFS)
+
+	e.GET("/favicon.ico", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "/static/favicon.svg")
+	})
 
 	e.GET("/", func(c echo.Context) error {
 		return render(c, Home())
