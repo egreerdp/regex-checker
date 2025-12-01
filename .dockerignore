@@ -1,0 +1,7 @@
+node_modules
+static/css
+static/js
+regex-checker
+_templ.go
+.git
+.DS_Store

@@ -6,3 +6,9 @@ bun = "latest"
 [tasks.dev]
 run = "bun build:all && air"
 description = "build and run the app"
+
+[tasks."docker:build"]
+run = "docker build -t regex-checker ."
+
+[tasks."docker:run"]
+run = "docker run -p 8080:8080 regex-checker"
