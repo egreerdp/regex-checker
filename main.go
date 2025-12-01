@@ -2,13 +2,11 @@ package main
 
 import (
 	"embed"
-	"html/template"
-	"io"
 	"io/fs"
 	"log"
-	"net/http"
 	"regexp"
 
+	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -16,16 +14,7 @@ import (
 //go:embed static/*
 var staticFiles embed.FS
 
-//go:embed index.html
-var indexHTML embed.FS
-
-type Template struct {
-	templates *template.Template
-}
-
-func (t *Template) Render(w io.Writer, name string, data any, c echo.Context) error {
-	return t.templates.ExecuteTemplate(w, name, data)
-}
+// Note: No need to embed index.html anymore, it's compiled into the code!
 
 type PageData struct {
 	Match    bool
@@ -33,16 +22,16 @@ type PageData struct {
 	Checked  bool
 }
 
+// Helper to bridge Templ components with Echo
+func render(c echo.Context, component templ.Component) error {
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
+	return component.Render(c.Request().Context(), c.Response().Writer)
+}
+
 func main() {
 	e := echo.New()
-
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
-	t := &Template{
-		templates: template.Must(template.ParseFS(indexHTML, "index.html")),
-	}
-	e.Renderer = t
 
 	assetFS, err := fs.Sub(staticFiles, "static")
 	if err != nil {
@@ -51,7 +40,7 @@ func main() {
 	e.StaticFS("/static", assetFS)
 
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index.html", nil)
+		return render(c, Home())
 	})
 
 	e.POST("/check", checkRegexHandler)
@@ -63,11 +52,11 @@ func checkRegexHandler(c echo.Context) error {
 	pattern := c.FormValue("regex")
 	testString := c.FormValue("testString")
 
-	data := PageData{Checked: true}
-
 	if pattern == "" && testString == "" {
-		return c.NoContent(http.StatusOK)
+		return render(c, Result(nil))
 	}
+
+	data := &PageData{Checked: true}
 
 	re, err := regexp.Compile(pattern)
 	if err != nil {
@@ -76,5 +65,5 @@ func checkRegexHandler(c echo.Context) error {
 		data.Match = re.MatchString(testString)
 	}
 
-	return c.Render(http.StatusOK, "result", data)
+	return render(c, Result(data))
 }

@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "build:assets": "mkdir -p static/js && cp node_modules/htmx.org/dist/htmx.min.js static/js/htmx.min.js",
+    "build:templ": "templ generate",
     "build:css": "bunx @tailwindcss/cli -i ./assets/input.css -o ./static/css/style.css --minify",
-    "watch:css": "bunx @tailwindcss/cli -i ./assets/input.css -o ./static/css/style.css --watch",
-    "build:all": "bun run build:assets && bun run build:css"
+    "build:all": "bun run build:assets && bun run build:templ && bun run build:css"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.17",
