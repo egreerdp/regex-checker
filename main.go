@@ -15,15 +15,12 @@ import (
 //go:embed static/*
 var staticFiles embed.FS
 
-// Note: No need to embed index.html anymore, it's compiled into the code!
-
 type PageData struct {
 	Match    bool
 	ErrorMsg string
 	Checked  bool
 }
 
-// Helper to bridge Templ components with Echo
 func render(c echo.Context, component templ.Component) error {
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
 	return component.Render(c.Request().Context(), c.Response().Writer)
