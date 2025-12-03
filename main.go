@@ -7,24 +7,13 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/a-h/templ"
+	"github.com/egreerdp/regex-checker/views"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 //go:embed static/*
 var staticFiles embed.FS
-
-type PageData struct {
-	Match    bool
-	ErrorMsg string
-	Checked  bool
-}
-
-func render(c echo.Context, component templ.Component) error {
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
-	return component.Render(c.Request().Context(), c.Response().Writer)
-}
 
 func main() {
 	e := echo.New()
@@ -42,7 +31,7 @@ func main() {
 	})
 
 	e.GET("/", func(c echo.Context) error {
-		return render(c, Home())
+		return views.Render(c, views.Home())
 	})
 
 	e.POST("/check", checkRegexHandler)
@@ -55,10 +44,10 @@ func checkRegexHandler(c echo.Context) error {
 	testString := c.FormValue("testString")
 
 	if pattern == "" && testString == "" {
-		return render(c, Result(nil))
+		return views.Render(c, views.Result(nil))
 	}
 
-	data := &PageData{Checked: true}
+	data := &views.PageData{Checked: true}
 
 	re, err := regexp.Compile(pattern)
 	if err != nil {
@@ -67,5 +56,5 @@ func checkRegexHandler(c echo.Context) error {
 		data.Match = re.MatchString(testString)
 	}
 
-	return render(c, Result(data))
+	return views.Render(c, views.Result(data))
 }
