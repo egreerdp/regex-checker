@@ -1,8 +1,15 @@
 # regex-checker
 
+A simple web based regex checker.
+
+## Setup
+
+Install [`mise`](https://mise.jdx.dev)
+
 To install dependencies:
 
 ```bash
+mise i &&
 bun install
 ```
 
