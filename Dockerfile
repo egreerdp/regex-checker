@@ -33,6 +33,9 @@ WORKDIR /root/
 
 COPY --from=backend-builder /app/regex-checker .
 
-EXPOSE 8080
+ARG port=80
+ENV PORT=$port
+
+EXPOSE $PORT
 
 CMD ["./regex-checker"]

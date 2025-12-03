@@ -2,9 +2,11 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 
 	"github.com/egreerdp/regex-checker/views"
@@ -36,7 +38,8 @@ func main() {
 
 	e.POST("/check", checkRegexHandler)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	listenAddr := fmt.Sprintf("0.0.0.0:%s", os.Getenv("PORT"))
+	e.Logger.Fatal(e.Start(listenAddr))
 }
 
 func checkRegexHandler(c echo.Context) error {
